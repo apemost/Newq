@@ -37,17 +37,7 @@ namespace Newq
         /// </summary>
         /// <param name="name"></param>
         /// <param name="parameters"></param>
-        public Function(string name, object[] parameters)
-            : base(name, parameters)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Function"/> class.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="parameters"></param>
-        public Function(string name, List<object> parameters)
+        public Function(string name, IEnumerable<object> parameters)
             : base(name, parameters)
         {
         }
