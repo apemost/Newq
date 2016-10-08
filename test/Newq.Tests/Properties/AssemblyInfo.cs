@@ -19,7 +19,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Newq.Tests")]
-[assembly: AssemblyDescription("A new query builder for CSharp")]
+[assembly: AssemblyDescription("A new query builder for building SQL statements on .NET and Mono")]
 [assembly: AssemblyProduct("Newq.Tests")]
 [assembly: AssemblyCopyright("Copyright 2015-2016 Andrew Lyu and Uriel Van")]
 [assembly: ComVisible(false)]
