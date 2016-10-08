@@ -53,7 +53,7 @@ namespace Newq
         /// <param name="name"></param>
         /// <param name="parameters"></param>
         /// <param name="withinBrackets"></param>
-        public Syntax(string name, object[] parameters, bool withinBrackets = true)
+        public Syntax(string name, IEnumerable<object> parameters, bool withinBrackets = true)
         {
             if (parameters == null)
             {
@@ -62,24 +62,6 @@ namespace Newq
 
             Name = name.ToUpper();
             Parameters = parameters.ToList();
-            WithinBrackets = withinBrackets;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Syntax"/> class.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="parameters"></param>
-        /// <param name="withinBrackets"></param>
-        public Syntax(string name, List<object> parameters, bool withinBrackets = true)
-        {
-            if (parameters == null)
-            {
-                throw new ArgumentNullException(nameof(parameters));
-            }
-
-            Name = name.ToUpper();
-            Parameters = parameters;
             WithinBrackets = withinBrackets;
         }
 

@@ -18,6 +18,7 @@ namespace Newq
     using Extensions;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// 
@@ -63,37 +64,15 @@ namespace Newq
         /// <param name="column"></param>
         /// <param name="comparisonOperator"></param>
         /// <param name="values"></param>
-        public Comparison(Column column, ComparisonOperator comparisonOperator, object[] values)
+        public Comparison(Column column, ComparisonOperator comparisonOperator, IEnumerable<object> values)
             : this(column, comparisonOperator)
         {
-            if (values == null || values.Length == 0)
+            if (values == null || values.Count() == 0)
             {
                 throw new ArgumentException(nameof(values) + " can't be null or empty");
             }
 
-            Values = new List<object>();
-
-            foreach (var obj in values)
-            {
-                Values.Add(obj);
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Comparison"/> class.
-        /// </summary>
-        /// <param name="column"></param>
-        /// <param name="comparisonOperator"></param>
-        /// <param name="values"></param>
-        public Comparison(Column column, ComparisonOperator comparisonOperator, List<object> values)
-            : this(column, comparisonOperator)
-        {
-            if (values == null || values.Count == 0)
-            {
-                throw new ArgumentException(nameof(values) + " can't be null or empty");
-            }
-
-            Values = values;
+            Values = values.ToList();
         }
 
         /// <summary>
