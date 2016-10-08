@@ -9,9 +9,36 @@ A new query builder for CSharp on .NET and Mono.
 ## Usage
 
 ```csharp
-var queryBuilder = new QueryBuilder();
 
-queryBuilder
+// `SELECT` statement:
+
+var builder1 = new QueryBuilder();
+
+builder1
+    .Select<Customer>();
+
+builder1.ToString();
+
+/*
+SELECT
+    [Customer].[Id] AS [Customer.Id]
+    ,[Customer].[Name] AS [Customer.Name]
+    ,[Customer].[City] AS [Customer.City]
+    ,[Customer].[Remark] AS [Customer.Remark]
+    ,[Customer].[Status] AS [Customer.Status]
+    ,[Customer].[Flag] AS [Customer.Flag]
+    ,[Customer].[Version] AS [Customer.Version]
+    ,[Customer].[AuthorId] AS [Customer.AuthorId]
+    ,[Customer].[EditorId] AS [Customer.EditorId]
+    ,[Customer].[CreatedDate] AS [Customer.CreatedDate]
+    ,[Customer].[ModifiedDate] AS [Customer.ModifiedDate]
+FROM
+    [Customer]
+*/
+
+var builder2 = new QueryBuilder();
+
+builder2
     .Select<Customer>((target, context) => {
         target += context["Provider", "Products"];
     })
@@ -36,42 +63,40 @@ queryBuilder
         target += context["Customer", "Name", SortOrder.Desc];
     });
 
-    queryBuilder.Paginate(new Paginator());
+    builder2.Paginate(new Paginator());
 
-    var result = queryBuilder.ToString();
+    var result = builder2.ToString();
 
-    /* result:
-
+/*
+SELECT
+    [Provider.Products]
+    ,[Customer.Name]
+FROM (
     SELECT
-        [Provider.Products]
+        ROW_NUMBER() OVER(ORDER BY [Customer.Name] DESC) AS [$ROW_NUMBER]
+        ,[Provider.Products]
         ,[Customer.Name]
     FROM (
         SELECT
-            ROW_NUMBER() OVER(ORDER BY [Customer.Name] DESC) AS [$ROW_NUMBER]
-            ,[Provider.Products]
-            ,[Customer.Name]
-        FROM (
-            SELECT
-                [Provider].[Products] AS [Provider.Products]
-                ,[Customer].[Name] AS [Customer.Name]
-            FROM
-                [Customer]
-            LEFT JOIN
-                [Provider]
-            ON
-                [Customer].[Name] = [Provider].[Name]
-            WHERE
-                [Customer].[City] LIKE '%New%'
-            GROUP BY
-                [Provider].[Products]
-            HAVING
-                [Provider].[Name] NOT LIKE '%New%'
-        ) AS [$ORIGINAL_QUERY]
-    ) AS [$PAGINATOR]
-    WHERE
-        [$PAGINATOR].[$ROW_NUMBER] BETWEEN 1 AND 10
-
-    */
+            [Provider].[Products] AS [Provider.Products]
+            ,[Customer].[Name] AS [Customer.Name]
+        FROM
+            [Customer]
+        LEFT JOIN
+            [Provider]
+        ON
+            [Customer].[Name] = [Provider].[Name]
+        WHERE
+            [Customer].[City] LIKE '%New%'
+        GROUP BY
+            [Provider].[Products]
+        HAVING
+            [Provider].[Name] NOT LIKE '%New%'
+    ) AS [$ORIGINAL_QUERY]
+) AS [$PAGINATOR]
+WHERE
+    [$PAGINATOR].[$ROW_NUMBER] BETWEEN 1 AND 10
+*/
 ```
 
 ## Installation
