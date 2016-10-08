@@ -36,7 +36,7 @@ namespace Newq.Tests
                 .Insert(customer);
 
             var result = queryBuilder.ToString();
-            var expected = 
+            var expected =
                 "INSERT INTO " +
                     "[Customer] " +
                 "(" +
@@ -90,7 +90,7 @@ namespace Newq.Tests
                 .Insert(list);
 
             var result = queryBuilder.ToString();
-            var expected = 
+            var expected =
                 "INSERT INTO " +
                     "[Customer] " +
                 "(" +
