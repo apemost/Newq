@@ -102,18 +102,20 @@ namespace Newq
         /// Adds a <see cref="ICustomItem{T}"/> to the end of the filter.
         /// </summary>
         /// <param name="item"></param>
-        public void Add(ICustomItem<Filter> item)
+        public Filter Add(ICustomItem<Filter> item)
         {
             Items.Add(item);
+            return this;
         }
 
         /// <summary>
         /// Removes the first occurrence of a specific <see cref="Condition"/> from the filter.
         /// </summary>
         /// <param name="item"></param>
-        public void Remove(ICustomItem<Filter> item)
+        public Filter Remove(ICustomItem<Filter> item)
         {
             Items.Remove(item);
+            return this;
         }
 
         /// <summary>

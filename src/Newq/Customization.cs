@@ -47,20 +47,5 @@ namespace Newq
         /// </summary>
         /// <returns></returns>
         public abstract string GetCustomization();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="expr"></param>
-        /// <returns></returns>
-        [Obsolete("Not recommended.", false)]
-        public Column Table<T>(Expression<Func<T, object>> expr)
-        {
-            var split = expr.Body.ToString().Split("(.)".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            var columnName = split[split.Length - 1];
-
-            return context[typeof(T).Name, columnName];
-        }
     }
 }

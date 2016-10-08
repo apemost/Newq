@@ -119,18 +119,20 @@ namespace Newq
         /// Adds a object to the end of the target.
         /// </summary>
         /// <param name="item"></param>
-        public void Add(ICustomItem<Target> item)
+        public Target Add(ICustomItem<Target> item)
         {
             Items.Add(item);
+            return this;
         }
 
         /// <summary>
         /// Removes the first occurrence of a specific object from the target.
         /// </summary>
         /// <param name="item"></param>
-        public void Remove(ICustomItem<Target> item)
+        public Target Remove(ICustomItem<Target> item)
         {
             Items.Remove(item);
+            return this;
         }
 
         /// <summary>

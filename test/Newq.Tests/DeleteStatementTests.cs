@@ -28,14 +28,13 @@ namespace Newq.Tests
             queryBuilder
                 .Delete<Customer>()
                 .Where((filter, context) => {
-                    var cust = context["Customer"];
-
-                    filter.Add(cust["City"].Between("New York", "Landon"));
-                    filter.Add(cust["Name"].Like("Google").Or(cust["Name"].Like("Apple", Pattern.BeginWith)));
+                    filter
+                        .Add(context.Table<Customer>(t => t.City).Between("New York", "Landon"))
+                        .Add(context.Table<Customer>(t => t.Name).Like("Google").Or(context.Table<Customer>(t => t.Name).Like("Apple", Pattern.BeginWith)));
                 });
 
             var result = queryBuilder.ToString();
-            var expected = 
+            var expected =
                 "DELETE " +
                 "FROM " +
                     "[Customer] " +

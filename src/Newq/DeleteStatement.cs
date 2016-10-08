@@ -16,7 +16,6 @@
 namespace Newq
 {
     using System;
-    using System.Collections.Generic;
 
     /// <summary>
     /// The DELETE statement is used to
@@ -83,7 +82,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public DeleteStatement Join<T>(Action<Filter, Context> customization)
+        public DeleteStatement Join<T>(Action<Filter, Context> customization) where T : class, new()
         {
             return Provider.Join<T>(this, JoinType.InnerJoin, customization) as DeleteStatement;
         }
@@ -97,7 +96,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public DeleteStatement LeftJoin<T>(Action<Filter, Context> customization)
+        public DeleteStatement LeftJoin<T>(Action<Filter, Context> customization) where T : class, new()
         {
             return Provider.Join<T>(this, JoinType.LeftJoin, customization) as DeleteStatement;
         }
@@ -111,7 +110,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public DeleteStatement RightJoin<T>(Action<Filter, Context> customization)
+        public DeleteStatement RightJoin<T>(Action<Filter, Context> customization) where T : class, new()
         {
             return Provider.Join<T>(this, JoinType.RightJoin, customization) as DeleteStatement;
         }
@@ -125,7 +124,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public DeleteStatement FullJoin<T>(Action<Filter, Context> customization)
+        public DeleteStatement FullJoin<T>(Action<Filter, Context> customization) where T : class, new()
         {
             return Provider.Join<T>(this, JoinType.FullJoin, customization) as DeleteStatement;
         }
@@ -139,7 +138,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public DeleteStatement CrossJoin<T>(Action<Filter, Context> customization)
+        public DeleteStatement CrossJoin<T>(Action<Filter, Context> customization) where T : class, new()
         {
             return Provider.Join<T>(this, JoinType.CrossJoin, customization) as DeleteStatement;
         }

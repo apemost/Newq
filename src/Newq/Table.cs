@@ -15,20 +15,34 @@
 
 namespace Newq
 {
-    using Attributes;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using Attributes;
 
     /// <summary>
     /// Simulate tables in Sql.
     /// </summary>
-    public class Table
+    public class Table<T> : Table where T : class, new()
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Table"/> class.
+        /// </summary>
+        public Table() : base(typeof(T))
+        {
+        }
+    }
+
+    /// <summary>
+    /// Simulate tables in Sql.
+    /// </summary>
+    public class Table : IEnumerable<Column>
     {
         /// <summary>
         /// An dictionary used to get columns in the table.
         /// </summary>
-        protected Dictionary<string, Column> columns;
+        protected List<Column> columns;
 
         /// <summary>
         /// The primary key of current table.
@@ -38,15 +52,22 @@ namespace Newq
         /// <summary>
         /// Initializes a new instance of the <see cref="Table"/> class.
         /// </summary>
+        protected Table()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Table"/> class.
+        /// </summary>
         /// <param name="type">Type of the corresponding class</param>
-        public Table(Type type)
+        protected Table(Type type)
         {
             if (type == null)
             {
                 throw new ArgumentNullException(nameof(type));
             }
 
-            columns = new Dictionary<string, Column>();
+            columns = new List<Column>();
 
             var tableAttributes = type.GetCustomAttributes(typeof(TableAttribute), false);
 
@@ -63,14 +84,14 @@ namespace Newq
             Column column = null;
             object[] columnAttributes = null;
 
-            var primaryKeyProperties = type.GetProperties()
+            var keyProperties = type.GetProperties()
                 .Where(prop => prop.CanRead &&
                                prop.CanWrite &&
                                prop.PropertyType.Namespace == "System" &&
-                               prop.CustomAttributes.Any(attr => attr.AttributeType == typeof(PrimaryKeyAttribute)) &&
+                               prop.CustomAttributes.Any(attr => attr.AttributeType == typeof(KeyAttribute)) &&
                                !prop.CustomAttributes.Any(attr => attr.AttributeType == typeof(ColumnIgnoreAttribute)));
 
-            foreach (var prop in primaryKeyProperties)
+            foreach (var prop in keyProperties)
             {
                 columnAttributes = prop.GetCustomAttributes(typeof(ColumnAttribute), false);
 
@@ -83,7 +104,7 @@ namespace Newq
                     column = new Column(this, prop.Name);
                 }
 
-                columns.Add(column.Name, column);
+                columns.Add(column);
                 primaryKey.Add(column);
             }
 
@@ -96,7 +117,7 @@ namespace Newq
             if (primaryKey.Count == 0 && properties.Any(p => p.Name == defaultPK))
             {
                 column = new Column(this, defaultPK);
-                columns.Add(column.Name, column);
+                columns.Add(column);
             }
 
             properties = properties.Where(prop => {
@@ -120,7 +141,7 @@ namespace Newq
             foreach (var prop in properties)
             {
                 column = new Column(this, prop.Name);
-                columns.Add(prop.Name, column);
+                columns.Add(column);
             }
         }
 
@@ -128,14 +149,6 @@ namespace Newq
         /// Gets or sets <see cref="Name"/>.
         /// </summary>
         public string Name { get; protected set; }
-
-        /// <summary>
-        /// A read-only list contains the columns in this.
-        /// </summary>
-        public IReadOnlyList<Column> Columns
-        {
-            get { return columns.Values.ToList(); }
-        }
 
         /// <summary>
         /// Gets primary key of current table.
@@ -152,7 +165,7 @@ namespace Newq
         /// <returns>an entity of column</returns>
         public Column this[string columnName]
         {
-            get { return columns[columnName]; }
+            get { return columns.First(c => c.Name == columnName); }
         }
 
         /// <summary>
@@ -165,7 +178,7 @@ namespace Newq
         {
             get
             {
-                var column = columns[columnName];
+                var column = this[columnName];
 
                 column.ExcludePattern = exclude;
 
@@ -181,7 +194,7 @@ namespace Newq
         /// <returns>an entity of column</returns>
         public OrderByColumn this[string columnName, SortOrder order]
         {
-            get { return new OrderByColumn(columns[columnName], order); }
+            get { return new OrderByColumn(this[columnName], order); }
         }
 
         /// <summary>
@@ -191,6 +204,24 @@ namespace Newq
         public override string ToString()
         {
             return string.Format("[{0}]", Name);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator<Column> GetEnumerator()
+        {
+            return columns.GetEnumerator();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

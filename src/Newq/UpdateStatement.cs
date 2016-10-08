@@ -15,9 +15,9 @@
 
 namespace Newq
 {
-    using Extensions;
     using System;
     using System.Collections.Generic;
+    using Extensions;
 
     /// <summary>
     /// The UPDATE statement is used to
@@ -61,8 +61,8 @@ namespace Newq
         {
             get
             {
-                return Context.Tables[0].PrimaryKey.Count == 0 ? null
-                    : Context.Tables[0].PrimaryKey[0].Name;
+                return Context[0].PrimaryKey.Count == 0 ? null
+                    : Context[0].PrimaryKey[0].Name;
             }
         }
 
@@ -73,43 +73,43 @@ namespace Newq
         public override string ToSql()
         {
             var targetStr = GetTarget();
-            
+
             if (targetStr.Length == 0)
             {
                 return string.Empty;
             }
-            
+
             var sql = string.Format("UPDATE {0} SET {1} FROM {0} ", Context[0], targetStr);
-            
+
             if (ObjectList.Count > 0 && !string.IsNullOrWhiteSpace(JoinOnPrimaryKey))
             {
                 var type = ObjectList[0].GetType();
                 var values = string.Empty;
                 var val = string.Empty;
                 var items = string.Empty;
-                
+
                 ObjectList.ForEach(obj => {
                     val += string.Format(",{0}", type.GetProperty(JoinOnPrimaryKey).GetValue(obj).ToSqlValue());
-                    
+
                     target.Items.ForEach(item => {
                         val += string.Format(",{0}", type.GetProperty((item as Column).Name).GetValue(obj).ToSqlValue());
                     });
-                    
+
                     values += string.Format(",({0})", val.Substring(1));
                     val = string.Empty;
                 });
-                
+
                 target.Items.ForEach(item => {
                     if (item != null)
                     {
                         items += string.Format(",[{0}]", (item as Column).Name);
                     }
                 });
-                
+
                 sql += string.Format("JOIN (VALUES {0}) AS [$UPDATE_SOURCE] ([{1}],{2}) ON {3} = [$UPDATE_SOURCE].[{1}] ",
                     values.Substring(1), JoinOnPrimaryKey, items.Substring(1), Context[0][JoinOnPrimaryKey]);
             }
-            
+
             if (Clauses.Count > 0)
             {
                 Clauses.ForEach(clause => sql += clause.ToSql());
@@ -132,7 +132,7 @@ namespace Newq
 
             if (target.Items.Count == 0)
             {
-                foreach (var col in Context[0].Columns)
+                foreach (var col in Context[0])
                 {
                     target.Items.Add(col);
                 }
@@ -172,7 +172,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public UpdateStatement Join<T>(Action<Filter, Context> customization)
+        public UpdateStatement Join<T>(Action<Filter, Context> customization) where T : class, new()
         {
             return Provider.Join<T>(this, JoinType.InnerJoin, customization) as UpdateStatement;
         }
@@ -187,7 +187,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public UpdateStatement LeftJoin<T>(Action<Filter, Context> customization)
+        public UpdateStatement LeftJoin<T>(Action<Filter, Context> customization) where T : class, new()
         {
             return Provider.Join<T>(this, JoinType.LeftJoin, customization) as UpdateStatement;
         }
@@ -202,7 +202,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public UpdateStatement RightJoin<T>(Action<Filter, Context> customization)
+        public UpdateStatement RightJoin<T>(Action<Filter, Context> customization) where T : class, new()
         {
             return Provider.Join<T>(this, JoinType.RightJoin, customization) as UpdateStatement;
         }
@@ -217,7 +217,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public UpdateStatement FullJoin<T>(Action<Filter, Context> customization)
+        public UpdateStatement FullJoin<T>(Action<Filter, Context> customization) where T : class, new()
         {
             return Provider.Join<T>(this, JoinType.FullJoin, customization) as UpdateStatement;
         }
@@ -232,7 +232,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public UpdateStatement CrossJoin<T>(Action<Filter, Context> customization)
+        public UpdateStatement CrossJoin<T>(Action<Filter, Context> customization) where T : class, new()
         {
             return Provider.Join<T>(this, JoinType.CrossJoin, customization) as UpdateStatement;
         }

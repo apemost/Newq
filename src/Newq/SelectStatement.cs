@@ -16,7 +16,6 @@
 namespace Newq
 {
     using System;
-    using System.Collections.Generic;
 
     /// <summary>
     /// The SELECT statement is used to select data from a database.
@@ -97,7 +96,7 @@ namespace Newq
 
             if (items.Count == 0)
             {
-                foreach (var col in Context[0].Columns)
+                foreach (var col in Context[0])
                 {
                     targetStr += string.Format(",{0} AS {1}", col, col.Alias);
                 }
@@ -134,11 +133,11 @@ namespace Newq
 
             if (items.Count == 0)
             {
-                foreach (var tab in Context.Tables)
+                foreach (var table in Context)
                 {
-                    foreach (var col in tab.Columns)
+                    foreach (var column in table)
                     {
-                        alias = col.Alias;
+                        alias = column.Alias;
                         targetStr += string.Format(",{0}", alias);
                     }
                 }
@@ -191,7 +190,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public SelectStatement Join<T>(Action<Filter, Context> customization)
+        public SelectStatement Join<T>(Action<Filter, Context> customization) where T : class, new()
         {
             return Provider.Join<T>(this, JoinType.InnerJoin, customization) as SelectStatement;
         }
@@ -205,7 +204,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public SelectStatement LeftJoin<T>(Action<Filter, Context> customization)
+        public SelectStatement LeftJoin<T>(Action<Filter, Context> customization) where T : class, new()
         {
             return Provider.Join<T>(this, JoinType.LeftJoin, customization) as SelectStatement;
         }
@@ -219,7 +218,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public SelectStatement RightJoin<T>(Action<Filter, Context> customization)
+        public SelectStatement RightJoin<T>(Action<Filter, Context> customization) where T : class, new()
         {
             return Provider.Join<T>(this, JoinType.RightJoin, customization) as SelectStatement;
         }
@@ -233,7 +232,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public SelectStatement FullJoin<T>(Action<Filter, Context> customization)
+        public SelectStatement FullJoin<T>(Action<Filter, Context> customization) where T : class, new()
         {
             return Provider.Join<T>(this, JoinType.FullJoin, customization) as SelectStatement;
         }
@@ -247,7 +246,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public SelectStatement CrossJoin<T>(Action<Filter, Context> customization)
+        public SelectStatement CrossJoin<T>(Action<Filter, Context> customization) where T : class, new()
         {
             return Provider.Join<T>(this, JoinType.CrossJoin, customization) as SelectStatement;
         }
@@ -305,7 +304,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public SelectStatement Union<T>(Action<Target, Context> customization)
+        public SelectStatement Union<T>(Action<Target, Context> customization) where T : class, new()
         {
             return Provider.Union<T>(this, customization);
         }
@@ -316,7 +315,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public SelectStatement UnionAll<T>(Action<Target, Context> customization)
+        public SelectStatement UnionAll<T>(Action<Target, Context> customization) where T : class, new()
         {
             return Provider.Union<T>(this, customization, UnionType.UnionAll);
         }

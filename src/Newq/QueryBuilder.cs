@@ -147,7 +147,7 @@ namespace Newq
         /// from the certain table
         /// without the keyword distinct
         /// </returns>
-        public SelectStatement Select<T>()
+        public SelectStatement Select<T>() where T : class, new()
         {
             return Select<T>(false, 0, false, null);
         }
@@ -166,7 +166,7 @@ namespace Newq
         /// SelectStatement to select certain quantity(percentage if isPercent is true)
         /// of the top records from the table
         /// </returns>
-        public SelectStatement Select<T>(int topRows, bool isPercent = false)
+        public SelectStatement Select<T>(int topRows, bool isPercent = false) where T : class, new()
         {
             return Select<T>(false, topRows, false, null);
         }
@@ -178,7 +178,7 @@ namespace Newq
         /// <typeparam name="T">Any class</typeparam>
         /// <param name="customization">Determine which column(s) to be selected from the table</param>
         /// <returns>SelectStatement to select all records within certain columns from the table without the keyword distinct</returns>
-        public SelectStatement Select<T>(Action<Target, Context> customization)
+        public SelectStatement Select<T>(Action<Target, Context> customization) where T : class, new()
         {
             return Select<T>(false, 0, false, customization);
         }
@@ -191,7 +191,7 @@ namespace Newq
         /// <param name="topRows"></param>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public SelectStatement Select<T>(int topRows, Action<Target, Context> customization)
+        public SelectStatement Select<T>(int topRows, Action<Target, Context> customization) where T : class, new()
         {
             return Select<T>(false, topRows, false, customization);
         }
@@ -205,7 +205,7 @@ namespace Newq
         /// <param name="isPercent"></param>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public SelectStatement Select<T>(int topRows, bool isPercent, Action<Target, Context> customization)
+        public SelectStatement Select<T>(int topRows, bool isPercent, Action<Target, Context> customization) where T : class, new()
         {
             return Select<T>(false, topRows, isPercent, customization);
         }
@@ -220,9 +220,9 @@ namespace Newq
         /// <param name="isPercent"></param>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public SelectStatement Select<T>(bool isDistinct, int topRows, bool isPercent, Action<Target, Context> customization)
+        public SelectStatement Select<T>(bool isDistinct, int topRows, bool isPercent, Action<Target, Context> customization) where T : class, new()
         {
-            var statement = new SelectStatement(new Table(typeof(T)));
+            var statement = new SelectStatement(new Table<T>());
 
             Statement = statement;
             statement.IsDistinct = isDistinct;
@@ -239,7 +239,7 @@ namespace Newq
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public SelectStatement SelectDistinct<T>()
+        public SelectStatement SelectDistinct<T>() where T : class, new()
         {
             return Select<T>(true, 0, false, null);
         }
@@ -252,7 +252,7 @@ namespace Newq
         /// <param name="topRows"></param>
         /// <param name="isPercent"></param>
         /// <returns></returns>
-        public SelectStatement SelectDistinct<T>(int topRows, bool isPercent = false)
+        public SelectStatement SelectDistinct<T>(int topRows, bool isPercent = false) where T : class, new()
         {
             return Select<T>(true, topRows, isPercent, null);
         }
@@ -264,7 +264,7 @@ namespace Newq
         /// <typeparam name="T">Any class</typeparam>
         /// <param name="customization">Determine which column(s) to be selected from the table</param>
         /// <returns>SelectStatement to select all records within certain columns from the table without the keyword distinct</returns>
-        public SelectStatement SelectDistinct<T>(Action<Target, Context> customization)
+        public SelectStatement SelectDistinct<T>(Action<Target, Context> customization) where T : class, new()
         {
             return Select<T>(true, 0, false, customization);
         }
@@ -277,7 +277,7 @@ namespace Newq
         /// <param name="topRows"></param>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public SelectStatement SelectDistinct<T>(int topRows, Action<Target, Context> customization)
+        public SelectStatement SelectDistinct<T>(int topRows, Action<Target, Context> customization) where T : class, new()
         {
             return Select<T>(true, topRows, false, customization);
         }
@@ -291,7 +291,7 @@ namespace Newq
         /// <param name="isPercent"></param>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public SelectStatement SelectDistinct<T>(int topRows, bool isPercent, Action<Target, Context> customization)
+        public SelectStatement SelectDistinct<T>(int topRows, bool isPercent, Action<Target, Context> customization) where T : class, new()
         {
             return Select<T>(true, topRows, isPercent, customization);
         }
@@ -304,32 +304,37 @@ namespace Newq
         /// <param name="obj"></param>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public UpdateStatement Update<T>(T obj, Action<Target, Context> customization = null)
+        public UpdateStatement Update<T>(T obj, Action<Target, Context> customization = null) where T : class, new()
         {
-            UpdateStatement statement = null;
+            var statement = new UpdateStatement(new Table<T>());
 
-            if (obj is IEnumerable)
-            {
-                var enumerator = ((IEnumerable)obj).GetEnumerator();
-
-                while (enumerator.MoveNext())
-                {
-                    if (statement == null)
-                    {
-                        statement = new UpdateStatement(new Table(enumerator.Current.GetType()));
-                    }
-
-                    statement.ObjectList.Add(enumerator.Current);
-                }
-            }
-            else
-            {
-                statement = new UpdateStatement(new Table(typeof(T)));
-                statement.ObjectList.Add(obj);
-            }
-
-            Statement = statement;
+            statement.ObjectList.Add(obj);
             statement.Target.Customize(customization);
+            Statement = statement;
+
+            return statement;
+        }
+
+        /// <summary>
+        /// UPDATE table_name
+        /// SET column1 = value, column2 = value,...
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="objects"></param>
+        /// <param name="customization"></param>
+        /// <returns></returns>
+        public UpdateStatement UpdateMany<T>(IEnumerable<T> objects, Action<Target, Context> customization = null) where T : class, new()
+        {
+            var statement = new UpdateStatement(new Table<T>());
+            var enumerator = ((IEnumerable)objects).GetEnumerator();
+
+            while (enumerator.MoveNext())
+            {
+                statement.ObjectList.Add(enumerator.Current);
+            }
+
+            statement.Target.Customize(customization);
+            Statement = statement;
 
             return statement;
         }
@@ -342,28 +347,32 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public InsertStatement Insert<T>(T obj)
+        public InsertStatement Insert<T>(T obj) where T : class, new()
         {
-            InsertStatement statement = null;
-            
-            if (obj is IEnumerable)
+            var statement = new InsertStatement(new Table<T>());
+
+            statement.ObjectList.Add(obj);
+            Statement = statement;
+
+            return statement;
+        }
+
+        /// <summary>
+        /// INSERT INTO table_name
+        /// (column1, column2, column3,...)
+        /// VALUES(value1, value2, value3,...)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="objects"></param>
+        /// <returns></returns>
+        public InsertStatement InsertMany<T>(IEnumerable<T> objects) where T : class, new()
+        {
+            var statement = new InsertStatement(new Table<T>());
+            var enumerator = objects.GetEnumerator();
+
+            while (enumerator.MoveNext())
             {
-                var enumerator = ((IEnumerable)obj).GetEnumerator();
-                
-                while(enumerator.MoveNext())
-                {
-                    if (statement == null)
-                    {
-                        statement = new InsertStatement(new Table(enumerator.Current.GetType()));
-                    }
-                    
-                    statement.ObjectList.Add(enumerator.Current);
-                }
-            }
-            else
-            {
-                statement = new InsertStatement(new Table(typeof(T)));
-                statement.ObjectList.Add(obj);
+                statement.ObjectList.Add(enumerator.Current);
             }
 
             Statement = statement;
@@ -376,7 +385,7 @@ namespace Newq
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public DeleteStatement Delete<T>()
+        public DeleteStatement Delete<T>() where T : class, new()
         {
             return Delete<T>(0, false);
         }
@@ -388,9 +397,9 @@ namespace Newq
         /// <param name="topRows"></param>
         /// <param name="isPercent"></param>
         /// <returns></returns>
-        public DeleteStatement Delete<T>(int topRows, bool isPercent = false)
+        public DeleteStatement Delete<T>(int topRows, bool isPercent = false) where T : class, new()
         {
-            var statement = new DeleteStatement(new Table(typeof(T)));
+            var statement = new DeleteStatement(new Table<T>());
 
             Statement = statement;
             statement.TopRows = topRows;

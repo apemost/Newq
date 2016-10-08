@@ -87,7 +87,7 @@ namespace Newq.Tests
             var queryBuilder = new QueryBuilder();
 
             queryBuilder
-                .Insert(list);
+                .InsertMany(list);
 
             var result = queryBuilder.ToString();
             var expected =

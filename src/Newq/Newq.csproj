@@ -75,10 +75,10 @@
     <AssemblyOriginatorKeyFile>Properties\key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Attributes\TableAttribute.cs" />
     <Compile Include="Attributes\ColumnAttribute.cs" />
-    <Compile Include="Attributes\PrimaryKeyAttribute.cs" />
     <Compile Include="Attributes\ColumnIgnoreAttribute.cs" />
+    <Compile Include="Attributes\KeyAttribute.cs" />
+    <Compile Include="Attributes\TableAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Clause.cs" />
     <Compile Include="Column.cs" />

@@ -74,7 +74,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public SelectStatement Union<T>(Action<Target, Context> customization)
+        public SelectStatement Union<T>(Action<Target, Context> customization) where T : class, new()
         {
             return Provider.Union<T>(Statement as SelectStatement, customization);
         }
@@ -85,7 +85,7 @@ namespace Newq
         /// <typeparam name="T"></typeparam>
         /// <param name="customization"></param>
         /// <returns></returns>
-        public SelectStatement UnionAll<T>(Action<Target, Context> customization)
+        public SelectStatement UnionAll<T>(Action<Target, Context> customization) where T : class, new()
         {
             return Provider.Union<T>(Statement as SelectStatement, customization, UnionType.UnionAll);
         }

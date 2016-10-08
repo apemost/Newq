@@ -15,9 +15,9 @@
 
 namespace Newq
 {
-    using Extensions;
     using System;
     using System.Collections.Generic;
+    using Extensions;
 
     /// <summary>
     /// The INSERT INTO statement is used to
@@ -51,7 +51,7 @@ namespace Newq
             var valueClause = string.Empty;
             Type type = null;
 
-            foreach (var col in Context[0].Columns)
+            foreach (var col in Context[0])
             {
                 columns += string.Format(",{0}", col);
             }
@@ -59,7 +59,7 @@ namespace Newq
             ObjectList.ForEach(obj => {
                 type = obj.GetType();
 
-                foreach (var col in Context[0].Columns)
+                foreach (var col in Context[0])
                 {
                     values += string.Format(",{0}", type.GetProperty(col.Name).GetValue(obj).ToSqlValue());
                 }

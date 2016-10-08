@@ -27,27 +27,27 @@ namespace Newq.Tests
 
             queryBuilder
                 .Select<Customer>((target, context) => {
-                    target.Add(context["Provider", "Products"]);
+                    target.Add(context.Table<Provider>(t => t.Products));
                 })
 
                 .LeftJoin<Provider>((filter, context) => {
-                    filter.Add(context["Customer", "Name"].EqualTo(context["Provider", "Name"]));
+                    filter.Add(context.Table<Customer>(t => t.Name).EqualTo(context.Table<Provider>(t => t.Name)));
                 })
 
                 .Where((filter, context) => {
-                    filter.Add(context["Customer", "City"].Like("New"));
+                    filter.Add(context.Table<Customer>(t => t.City).Like("New"));
                 })
 
                 .GroupBy((target, context) => {
-                    target.Add(context["Provider", "Products"]);
+                    target.Add(context.Table<Provider>(t => t.Products));
                 })
 
                 .Having((filter, context) => {
-                    filter.Add(context["Provider", "Name"].NotLike("New"));
+                    filter.Add(context.Table<Provider>(t => t.Name).NotLike("New"));
                 })
 
                 .OrderBy((target, context) => {
-                    target.Add(context["Customer", "Name", SortOrder.Desc]);
+                    target.Add(context.Table<Customer>(t => t.Name, SortOrder.Desc));
                 });
 
             queryBuilder.Paginate(new Paginator());
@@ -93,29 +93,29 @@ namespace Newq.Tests
 
             queryBuilder
                 .Select<Customer>((target, context) => {
-                    target += context["Customer", "Name"];
-                    target += context["Provider", "Products"];
+                    target += context.Table<Customer>(t => t.Name);
+                    target += context.Table<Provider>(t => t.Products);
                 })
 
                 .LeftJoin<Provider>((filter, context) => {
-                    filter += context["Customer", "Name"] == context["Provider", "Name"];
+                    filter += context.Table<Customer>(t => t.Name) == context.Table<Provider>(t => t.Name);
                 })
 
                 .Where((filter, context) => {
-                    filter += context["Customer", "City"].Like("New");
+                    filter += context.Table<Customer>(t => t.City).Like("New");
                 })
 
                 .GroupBy((target, context) => {
-                    target += context["Provider", "Products"];
+                    target += context.Table<Provider>(t => t.Products);
                 })
 
                 .Having((filter, context) => {
-                    filter += context["Provider", "Name"].NotLike("New");
+                    filter += context.Table<Provider>(t => t.Name).NotLike("New");
                 })
 
                 .OrderBy((target, context) => {
-                    target += context["Customer", "Name", SortOrder.Desc];
-                    target += context["Customer", "Id", SortOrder.Desc];
+                    target += context.Table<Customer>(t => t.Name, SortOrder.Desc);
+                    target += context.Table<Customer>(t => t.Id, SortOrder.Desc);
                 });
 
             queryBuilder.Paginate(new Paginator());
@@ -164,28 +164,28 @@ namespace Newq.Tests
 
             queryBuilder
                 .Select<Customer>((target, context) => {
-                    target += context["Provider", "Products"];
+                    target += context.Table<Provider>(t => t.Products);
                 })
 
                 .LeftJoin<Provider>((filter, context) => {
-                    filter += context["Customer", "Name"] == context["Provider", "Name"];
+                    filter += context.Table<Customer>(t => t.Name) == context.Table<Provider>(t => t.Name);
                 })
 
                 .Where((filter, context) => {
-                    filter += context["Customer", "City"].Like("New");
+                    filter += context.Table<Customer>(t => t.City).Like("New");
                 })
 
                 .GroupBy((target, context) => {
-                    target += context["Provider", "Products"];
+                    target += context.Table<Provider>(t => t.Products);
                 })
 
                 .Having((filter, context) => {
-                    filter += context["Provider", "Name"].NotLike("New");
+                    filter += context.Table<Provider>(t => t.Name).NotLike("New");
                 })
 
                 .OrderBy((target, context) => {
-                    target += context["Customer", "Name", SortOrder.Desc];
-                    target += context["Customer", "Id", SortOrder.Desc];
+                    target += context.Table<Customer>(t => t.Name, SortOrder.Desc);
+                    target += context.Table<Customer>(t => t.Id, SortOrder.Desc);
                 });
 
             var result = queryBuilder.ToString();
@@ -220,16 +220,16 @@ namespace Newq.Tests
                 .Select<Customer>()
 
                 .LeftJoin<Provider>((filter, context) => {
-                    filter += context["Customer", "Name"] == context["Provider", "Name"];
+                    filter += context.Table<Customer>(t => t.Name) == context.Table<Provider>(t => t.Name);
                 })
 
                 .Where((filter, context) => {
-                    filter += context["Customer", "City"].Like("New");
+                    filter += context.Table<Customer>(t => t.City).Like("New");
                 })
 
                 .OrderBy((target, context) => {
-                    target += context["Customer", "Name", SortOrder.Desc];
-                    target += context["Customer", "Id", SortOrder.Desc];
+                    target += context.Table<Customer>(t => t.Name, SortOrder.Desc);
+                    target += context.Table<Customer>(t => t.Id, SortOrder.Desc);
                 });
 
             var result = queryBuilder.ToString();

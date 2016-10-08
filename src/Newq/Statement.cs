@@ -74,16 +74,12 @@ namespace Newq
             /// <param name="type"></param>
             /// <param name="customization"></param>
             /// <returns></returns>
-            public static Statement Join<T>(Statement statement, JoinType type, Action<Filter, Context> customization)
+            public static Statement Join<T>(Statement statement, JoinType type, Action<Filter, Context> customization) where T : class, new()
             {
                 var objType = typeof(T);
                 JoinClause clause = null;
 
-                if (!statement.Context.Contains(objType.Name))
-                {
-                    statement.Context.Add(new Table(objType));
-                }
-
+                statement.Context.Add(new Table<T>());
                 clause = new JoinClause(statement, statement.Context[objType.Name], type);
                 statement.Clauses.Add(clause);
                 clause.Filter.Customize(customization);
@@ -113,21 +109,21 @@ namespace Newq
             /// <param name="customization"></param>
             /// <param name="type"></param>
             /// <returns></returns>
-            public static SelectStatement Union<T>(SelectStatement statement, Action<Target, Context> customization, UnionType type = UnionType.Union)
+            public static SelectStatement Union<T>(SelectStatement statement, Action<Target, Context> customization, UnionType type = UnionType.Union) where T : class, new()
             {
                 if (statement == null)
                 {
                     throw new ArgumentNullException(nameof(statement));
                 }
 
-                var objType = typeof(T);
-                var unionStatement = new SelectStatement(new Table(objType));
+                var table = new Table<T>();
+                var unionStatement = new SelectStatement(table);
 
-                foreach (var table in statement.Context.Tables)
+                foreach (var tbl in statement.Context)
                 {
-                    if (table.Name != objType.Name)
+                    if (tbl.Name != table.Name)
                     {
-                        unionStatement.Context.Add(table);
+                        unionStatement.Context.Add(tbl);
                     }
                 }
 

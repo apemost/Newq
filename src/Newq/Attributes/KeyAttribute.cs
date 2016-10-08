@@ -21,7 +21,7 @@ namespace Newq.Attributes
     /// Specify a property is a primary key.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public sealed class PrimaryKeyAttribute : Attribute
+    public sealed class KeyAttribute : Attribute
     {
     }
 }

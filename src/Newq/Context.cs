@@ -16,18 +16,20 @@
 namespace Newq
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
 
     /// <summary>
     /// Database context for statement or clause.
     /// </summary>
-    public class Context
+    public class Context : IEnumerable<Table>
     {
         /// <summary>
         /// 
         /// </summary>
-        protected Dictionary<string, Table> tables;
+        protected List<Table> tables;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Context"/> class.
@@ -40,36 +42,27 @@ namespace Newq
                 throw new ArgumentNullException(nameof(table));
             }
 
-            tables = new Dictionary<string, Table>();
-            tables.Add(table.Name, table);
+            tables = new List<Table> { table };
         }
 
         /// <summary>
-        /// Gets <see cref="Tables"/>.
-        /// </summary>
-        public IReadOnlyList<Table> Tables
-        {
-            get { return tables.Values.ToList(); }
-        }
-
-        /// <summary>
-        /// Gets <see cref="Table"/> by index.
+        /// Gets <see cref="Newq.Table"/> by index.
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
         public Table this[int index]
         {
-            get { return Tables[index]; }
+            get { return tables[index]; }
         }
 
         /// <summary>
-        /// Gets <see cref="Table"/> by table name.
+        /// Gets <see cref="Newq.Table"/> by table name.
         /// </summary>
         /// <param name="tableName"></param>
         /// <returns></returns>
         public Table this[string tableName]
         {
-            get { return tables[tableName]; }
+            get { return tables.First(t => t.Name == tableName); }
         }
 
         /// <summary>
@@ -80,7 +73,7 @@ namespace Newq
         /// <returns></returns>
         public Column this[string tableName, string columnName]
         {
-            get { return tables[tableName][columnName]; }
+            get { return this[tableName][columnName]; }
         }
 
         /// <summary>
@@ -92,7 +85,7 @@ namespace Newq
         /// <returns></returns>
         public Column this[string tableName, string columnName, Exclude exclude]
         {
-            get { return tables[tableName][columnName, exclude]; }
+            get { return this[tableName][columnName, exclude]; }
         }
 
         /// <summary>
@@ -104,26 +97,76 @@ namespace Newq
         /// <returns></returns>
         public OrderByColumn this[string tableName, string columnName, SortOrder order]
         {
-            get { return tables[tableName][columnName, order]; }
+            get { return this[tableName][columnName, order]; }
         }
 
         /// <summary>
-        /// Determines whether a <see cref="Table"/> is in the context.
+        /// 
         /// </summary>
-        /// <param name="tableName"></param>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public bool Contains(string tableName)
+        public Table Table<T>() where T : class, new()
         {
-            return tables.ContainsKey(tableName);
+            return tables.First(t => t.Name == typeof(T).Name);
         }
 
         /// <summary>
-        /// Adds a <see cref="Table"/> to the end of the context.
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expr"></param>
+        /// <returns></returns>
+        public Column Table<T>(Expression<Func<T, object>> expr) where T : class, new()
+        {
+            var split = expr.Body.ToString().Split("(.)".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            var columnName = split[split.Length - 1];
+
+            return tables.First(t => t.Name == typeof(T).Name).First(c => c.Name == columnName);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expr"></param>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        public OrderByColumn Table<T>(Expression<Func<T, object>> expr, SortOrder order) where T : class, new()
+        {
+            var split = expr.Body.ToString().Split("(.)".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            var columnName = split[split.Length - 1];
+
+            return tables.First(t => t.Name == typeof(T).Name)[columnName, order];
+        }
+
+        /// <summary>
+        /// Adds a <see cref="Newq.Table"/> to the end of the context.
         /// </summary>
         /// <param name="table"></param>
         public void Add(Table table)
         {
-            tables.Add(table.Name, table);
+            if (tables.All(t => t.Name != table.Name))
+            {
+                tables.Add(table);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator<Table> GetEnumerator()
+        {
+            return tables.GetEnumerator();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Newq.Tests.Models
 
         public Country Country { get; set; }
 
-        [PrimaryKey]
+        [Key]
         [Column("ID")]
         public string id { get; set; }
 
