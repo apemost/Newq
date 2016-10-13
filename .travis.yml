@@ -1,20 +1,14 @@
 language: csharp
-
 solution: Newq.sln
-
 sudo: false
-
 cache:
   directories:
-    - $TRAVIS_BUILD_DIR/packages
-
+  - $TRAVIS_BUILD_DIR/packages
 install:
-  - nuget restore Newq.sln
-  - nuget install xunit.runners -Version 1.9.1 -OutputDirectory testrunner
-
+- nuget restore Newq.sln
+- nuget install xunit.runners -Version 1.9.1 -OutputDirectory testrunner
 script:
-  - xbuild /p:Configuration=Release Newq.sln
-  - mono ./testrunner/xunit.runners.1.9.1/tools/xunit.console.clr4.exe test/Newq.Tests/bin/Release/Newq.Tests.dll
-
+- xbuild /p:Configuration=Release Newq.sln
+- mono ./testrunner/xunit.runners.1.9.1/tools/xunit.console.clr4.exe test/Newq.Tests/bin/Release/Newq.Tests.dll
 notifications:
   email: false

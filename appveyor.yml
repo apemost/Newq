@@ -1,28 +1,20 @@
 image: Visual Studio 2015
 platform: Any CPU
-
 version: 1.0.{build}
 configuration: Release
 cache:
-  - packages -> **\packages.cofig
-  - '%LocalAppData%\NuGet\Cache'
-
+- packages -> **\packages.cofig
+- '%LocalAppData%\NuGet\Cache'
 skip_tags: true
-
 nuget:
   disable_publish_on_pr: true
-
 pull_requests:
   do_not_increment_build_number: true
-
 install:
-  - set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
-  - nuget restore
-
+- set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
+- nuget restore
 build:
   project: Newq.sln
   verbosity: detailed
-
 test: off
-
 deploy: off
