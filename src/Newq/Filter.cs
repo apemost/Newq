@@ -1,35 +1,20 @@
-﻿/* Copyright 2015-2016 Andrew Lyu and Uriel Van
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 namespace Newq
 {
     using System;
     using System.Collections.Generic;
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class Filter : Customization, ICustomizable<Action<Filter, Context>>
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         protected Action<Filter, Context> customization;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         protected bool hasPerformed;
 
@@ -49,7 +34,7 @@ namespace Newq
         public List<ICustomItem<Filter>> Items { get; protected set; }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="customization"></param>
         public void Customize(Action<Filter, Context> customization)

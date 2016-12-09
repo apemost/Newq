@@ -1,18 +1,3 @@
-﻿/* Copyright 2015-2016 Andrew Lyu and Uriel Van
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 namespace Newq
 {
     using System;
@@ -52,9 +37,9 @@ namespace Newq
             {
                 return string.Empty;
             }
-            
+
             var sql = Statement.ToSql();
-            
+
             if (Paginator != null && Statement is SelectStatement)
             {
                 var orderByIndex = sql.IndexOf(" ORDER BY ");
@@ -71,26 +56,26 @@ namespace Newq
                     alias = col.IndexOf(" AS ") > -1 ? col.Substring(col.IndexOf(" AS ") + 4) : col;
                     targetAlias += string.Format(",{0}", alias.Trim());
                 }
-                    
+
                 if (orderByIndex > -1)
                 {
                     orderByClause = sql.Substring(orderByIndex + 10).Trim();
                     sql = sql.Remove(orderByIndex);
-                    
+
                     var orderByColumns = orderByClause.Split(',');
-                    
+
                     foreach (var col in orderByColumns)
                     {
                         column = col.Replace(" ASC", "").Replace(" DESC", "");
                         alias = column.Trim().Replace("].[", ".");
-                        
+
                         if (originalTarget.IndexOf(alias) == -1)
                         {
                             newTarget += string.Format(",{0} AS {1}", column, alias);
                             targetAlias += string.Format(",{0}", alias);
                         }
                     }
-                    
+
                     orderByClause = orderByClause.Replace("].[", ".");
                     sql = sql.Replace(originalTarget, newTarget);
                 }
@@ -102,12 +87,12 @@ namespace Newq
                     orderByClause = firstTargetEndIndex == -1 ? originalTarget.Substring(aliasIndex)
                                   : originalTarget.Substring(aliasIndex, firstTargetEndIndex - (aliasIndex));
                 }
-                
+
                 if (targetAlias.Length > 2)
                 {
                     targetAlias = targetAlias.Substring(1);
                 }
-                
+
                 sql = string.Format(
                     "SELECT {0} FROM (" +
                         "SELECT ROW_NUMBER() OVER(ORDER BY {1}) AS [$ROW_NUMBER],{0} FROM ({2}) AS [$ORIGINAL_QUERY]" +
@@ -115,7 +100,7 @@ namespace Newq
                     "WHERE [$PAGINATOR].[$ROW_NUMBER] BETWEEN {3} AND {4} ",
                     targetAlias, orderByClause, sql.Trim(), Paginator.BeginRowNumber, Paginator.EndRowNumber);
             }
-            
+
             return sql;
         }
 

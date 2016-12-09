@@ -4,11 +4,11 @@
     <id>Newq</id>
     <version>1.1.0</version>
     <authors>Andrew Lyu, Uriel Van</authors>
-    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <licenseUrl>https://github.com/apemost/Newq/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/apemost/Newq</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A new query builder for building SQL statements on .NET and Mono</description>
-    <copyright>Copyright 2015-2016 Andrew Lyu and Uriel Van</copyright>
+    <copyright>Copyright (c) 2015-2016 Andrew Lyu and Uriel Van</copyright>
     <tags>Newq SQL QueryBuilder</tags>
   </metadata>
   <files>
