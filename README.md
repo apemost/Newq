@@ -16,8 +16,7 @@ PM> Install-Package Newq
 
 ## License
 
-Copyright (c) 2015-2016 Andrew Lyu and Uriel Van.
-Licensed under the MIT License.
+[MIT](LICENSE)
 
 [travis-image]: https://travis-ci.org/apemost/Newq.svg?branch=master
 [travis-url]: https://travis-ci.org/apemost/Newq
